@@ -22,7 +22,7 @@ func Load() *Config {
 		BotToken:                mustGet("DISCORD_BOT_TOKEN"),
 		AiAPIKey:                mustGet("AI_API"),
 		ModelName:               mustGet("AI_MODEL"),
-		SystemPrompt:            mustGet("SYSTEM_PROMPT_LATEST"),
+		SystemPrompt:            mustGet("SYSTEM_PROMPT_V1"),
 		ResponseCriteria:        mustGet("RESPONSE_CRITERIA_LATEST"),
 		IsResponseRequiredModel: mustGet("IS_RESPONSE_REQUIRED_MODEL"),
 	}

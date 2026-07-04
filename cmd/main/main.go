@@ -16,7 +16,7 @@ func main() {
 
 	Bot, err := bot.New(cfg)
 	if err != nil {
-		log.Fatal("bot could not start", err)
+		log.Fatal("bot could not start", "error", err)
 	}
 
 	err = Bot.Start()
@@ -29,7 +29,7 @@ func main() {
 		Status: string(discordgo.StatusOnline),
 	})
 	if err != nil {
-		log.Error("Could not set status", err)
+		log.Error("Could not set status", "error", err)
 	}
 
 	// Keep running until an OS interrupt/kill signal is received

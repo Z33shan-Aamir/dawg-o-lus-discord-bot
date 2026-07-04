@@ -13,20 +13,20 @@ import (
 )
 
 type Inference struct {
-	apiToken                string
-	model                   string
-	baseURL                 string
-	systemPrompt            string
+	apiToken string
+	model    string
+	baseURL  string
+	// systemPrompt            string
 	responseCriteria        string
 	isResponseRequiredModel string
 }
 
 func New(cfg *config.Config) *Inference {
 	return &Inference{
-		apiToken:                cfg.AiAPIKey,
-		model:                   cfg.ModelName,
-		baseURL:                 "https://openrouter.ai/api/v1",
-		systemPrompt:            cfg.SystemPrompt,
+		apiToken: cfg.AiAPIKey,
+		model:    cfg.ModelName,
+		baseURL:  "https://openrouter.ai/api/v1",
+		// systemPrompt:            cfg.SystemPrompt,
 		responseCriteria:        cfg.ResponseCriteria,
 		isResponseRequiredModel: cfg.IsResponseRequiredModel,
 	}
@@ -34,10 +34,10 @@ func New(cfg *config.Config) *Inference {
 
 func NewOllama(cfg *config.Config) *Inference {
 	return &Inference{
-		apiToken:         "",
-		model:            "meta-llama/llama-3.1-8b-instruct",
-		baseURL:          "http://localhost:11434/v1",
-		systemPrompt:     cfg.SystemPrompt,
+		apiToken: "",
+		model:    "meta-llama/llama-3.1-8b-instruct",
+		baseURL:  "http://localhost:11434/v1",
+		// systemPrompt:     cfg.SystemPrompt,
 		responseCriteria: cfg.ResponseCriteria,
 	}
 
@@ -131,9 +131,9 @@ func (i *Inference) IsResponseRequired(message string, history []Message) (bool,
 	return true, nil
 }
 
-func (i *Inference) GenerateResponse(history []Message, newMessage string) (string, error) {
+func (i *Inference) GenerateResponse(systemPrompt string, history []Message, newMessage string) (string, error) {
 
-	message, err := i.chatCompletions(i.systemPrompt, i.model, history, newMessage)
+	message, err := i.chatCompletions(systemPrompt, i.model, history, newMessage)
 	if err != nil {
 		log.Error("Could not generate response", err)
 		return "", err
