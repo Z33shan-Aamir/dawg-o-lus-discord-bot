@@ -17,6 +17,16 @@ A Discord bot written in Go that uses a local AI inference workflow and supports
 - `flyctl` for Fly.io deployment
 - Optionally `air` for live reload during development
 
+## Disocrd Bot Commands
+
+Moderators can run the following command
+
+- `/block-channel` this commands blocks the bot from sending messages to channel where this command was used
+- `/unblock-channel` command to unblocks the channel
+- `/list-blocked-channels` Lists all the currently blocked channels
+- `/change-system-prompt prompt:<your-prompt>` this command changes the system prompt to your prompt which is server specific.
+- `/reset-system-prompt` changes the prompt to default system prompt
+
 ## Environment Variables
 
 The app loads configuration from environment variables using `github.com/joho/godotenv`.
@@ -72,35 +82,6 @@ go install github.com/cosmtrek/air@latest
 
 Then run the app with `air` from the project root:
 
-```bash
-air
-```
-
-If you want a dedicated config file, create a `.air.toml` with content similar to:
-
-```toml
-# .air.toml
-root = "."
-tmp_dir = "tmp"
-
-[build]
-  cmd = "go build -o ./tmp/bot ./cmd/main"
-  include_ext = ["go", "tpl", "tmpl", "html"]
-  exclude_dir = ["assets", "tmp"]
-
-[log]
-  time = true
-
-[run]
-  cmd = "./tmp/bot"
-```
-
-Then run:
-
-```bash
-air -c .air.toml
-```
-
 ## Deploy to Fly.io
 
 ### 1. Install `flyctl`
@@ -118,10 +99,11 @@ fly auth login
 If you have not created the app yet, run:
 
 ```bash
-fly apps create
+fly launch --no-deply
 ```
 
-If you already have an app configured, verify the `app` setting in `fly.toml`.
+This will create the app and not deply it.
+You can change the settings either during the command running or in the `fly.toml` file
 
 ### 4. Configure environment variables on Fly
 
@@ -131,18 +113,15 @@ Set the required environment variables on Fly before deploy:
 fly secrets set \
   DISCORD_BOT_TOKEN=your-token-here \
   AI_API=your-api-key-here \
-  AI_MODEL=meta-llama/llama-3.1-8b-instruct \
-  SYSTEM_PROMPT_V1="..." \
-  RESPONSE_CRITERIA_LATEST=google/gemma-4-26b-a4b-it \
-  IS_RESPONSE_REQUIRED_MODEL=google/gemma-4-26b-a4b-it
 ```
 
 ### 5. Deploy
 
-Use the provided `fly.toml` and deploy the app:
+Use the provided `fly.toml` (if fly.io costs are less that 5$ it gets wavered) and deploy the app:
 
 ```bash
-fly deploy --config fly.toml
+fly launch --no-deploy
+fly deploy --ha=false # the flag is used to disable high availablity for low cost
 ```
 
 ### 6. Check app status
