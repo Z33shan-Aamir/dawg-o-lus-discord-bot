@@ -121,7 +121,8 @@ Use the provided `fly.toml` (if fly.io costs are less that 5$ it gets wavered) a
 
 ```bash
 fly launch --no-deploy
-fly deploy --ha=false # the flag is used to disable high availablity for low cost
+fly deploy --ha=false # the flag is used to disable high availablity for low cost and because it will respond 2 times
+
 ```
 
 ### 6. Check app status

@@ -5,7 +5,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bwmarrin/discordgo"
 	"github.com/charmbracelet/log"
 	"github.com/discord-bitch/config"
 	"github.com/discord-bitch/internal/bot"
@@ -16,21 +15,15 @@ func main() {
 
 	Bot, err := bot.New(cfg)
 	if err != nil {
-		log.Fatal("bot could not start", "error", err)
+		log.Fatal("bot could not be initialized", "error", err)
 	}
 
 	err = Bot.Start()
 	if err != nil {
-		log.Info("Bot has been started")
+		log.Fatal("failed to start bot session", "error", err)
 	}
 
-	// Set status once right after starting
-	err = Bot.Session.UpdateStatusComplex(discordgo.UpdateStatusData{
-		Status: string(discordgo.StatusOnline),
-	})
-	if err != nil {
-		log.Error("Could not set status", "error", err)
-	}
+	log.Info("Bot session started, awaiting gateway ready signal...")
 
 	// Keep running until an OS interrupt/kill signal is received
 	sc := make(chan os.Signal, 1)

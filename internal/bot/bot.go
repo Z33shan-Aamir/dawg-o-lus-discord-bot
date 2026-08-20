@@ -199,6 +199,14 @@ func respondEphemeral(s *discordgo.Session, i *discordgo.InteractionCreate, mess
 }
 
 func (b *Bot) OnReady(s *discordgo.Session, r *discordgo.Ready) {
+	// Set status safely inside OnReady once WebSocket is ready
+	err := s.UpdateStatusComplex(discordgo.UpdateStatusData{
+		Status: string(discordgo.StatusOnline),
+	})
+	if err != nil {
+		log.Error("Could not set status", "error", err)
+	}
+
 	for _, guild := range r.Guilds {
 		if err := b.RegisterCommands(guild.ID); err != nil {
 			log.Error("failed to register commands", "guild", guild.ID, "err", err)
@@ -207,20 +215,19 @@ func (b *Bot) OnReady(s *discordgo.Session, r *discordgo.Ready) {
 	log.Info("bot is ready", "username", r.User.Username)
 }
 
+func (b *Bot) Close() {
+	log.Warn("Bot is shutting down...")
+	if err := b.Session.Close(); err != nil {
+		log.Error("Error closing discord session", "err", err)
+	}
+}
+
 func (b *Bot) Start() error {
 	if err := b.Session.Open(); err != nil {
 		return err
 	}
 	log.Info("Bot has started")
 	return nil
-}
-
-func (b *Bot) Close() {
-	log.Warn("Bot has stopped")
-	b.Session.UpdateStatusComplex(discordgo.UpdateStatusData{
-		Status: string(discordgo.StatusOffline),
-	})
-	b.Session.Close()
 }
 
 func (b *Bot) GuildCreate(s *discordgo.Session, g *discordgo.GuildCreate) {
@@ -272,19 +279,19 @@ func (b *Bot) MessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if m.Content == "ping" {
-		if os.Getenv("IS_PROD") != "true" {
+		if os.Getenv("IS_PROD") == "false" {
 			s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Model: %s\n System Prompt: %s\n", b.AI.ModelName(), b.Config.SystemPrompt))
 			return
 		}
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Model: %s", b.Config.ModelName))
 		return
 	}
 
-	// Process message if within 5 minutes
 	// 1. Get or create chat history context for this specific channel
 	b.contextMu.Lock()
 	ctxMgr, exists := b.Context[m.ChannelID]
 	if !exists {
-		ctxMgr = ai.NewContextManager(20) // Retain last 20 messages
+		ctxMgr = ai.NewContextManager(50) // Retain last 20 messages
 		b.Context[m.ChannelID] = ctxMgr
 	}
 	b.contextMu.Unlock()
