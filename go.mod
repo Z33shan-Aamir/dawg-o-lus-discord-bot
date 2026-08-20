@@ -1,4 +1,4 @@
-module github.com/discord-bitch
+module github.com/Z33shan-Aamir/inkwell
 
 go 1.26.3
 

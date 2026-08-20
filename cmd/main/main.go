@@ -6,8 +6,8 @@ import (
 	"syscall"
 
 	"github.com/charmbracelet/log"
-	"github.com/discord-bitch/config"
-	"github.com/discord-bitch/internal/bot"
+	"github.com/Z33shan-Aamir/inkwell/config"
+	"github.com/Z33shan-Aamir/inkwell/internal/bot"
 )
 
 func main() {

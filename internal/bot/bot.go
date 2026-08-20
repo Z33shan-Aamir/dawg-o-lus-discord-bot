@@ -9,8 +9,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/charmbracelet/log"
-	"github.com/discord-bitch/config"
-	"github.com/discord-bitch/internal/ai"
+	"github.com/Z33shan-Aamir/inkwell/config"
+	"github.com/Z33shan-Aamir/inkwell/internal/ai"
 )
 
 type Bot struct {

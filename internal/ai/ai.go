@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/log"
-	"github.com/discord-bitch/config"
+	"github.com/Z33shan-Aamir/inkwell/config"
 )
 
 type Inference struct {
